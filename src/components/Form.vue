@@ -1,7 +1,7 @@
 <script setup>
   import { ref } from 'vue'
 
-  const emit = defineEmits(['formSubmit'])
+const emit = defineEmits(['formSubmit', 'update:modelValue'])
   const searchInput = ref('')
 
   function handleSubmit(ev) {
@@ -15,6 +15,9 @@
     <input 
       type="text" 
       placeholder="Digite um endeço do github" v-model="searchInput"
+      @input="
+        $emit('update:modelValue', $event.target.value)       
+      "
     >
 
     <button>Carregar Usuário</button>

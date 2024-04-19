@@ -4,7 +4,7 @@ import Form from './Form.vue';
 import UserInfo from './UserInfo.vue';
 import Repository from './Repository.vue';
 
-// const searchInput = ref('')
+const userName = ref('')
 
 const state = reactive({
   login: '',
@@ -16,10 +16,10 @@ const state = reactive({
 })
 
 
-async function fetchGithubUser(username) {
+async function fetchGithubUser(searchInput) {
 
   try {
-    const res = await fetch(`https://api.github.com/users/${username}`);
+    const res = await fetch(`https://api.github.com/users/${searchInput}`);
     const { login, name, bio, company, avatar_url } = await res.json();
 
     state.login = login;
@@ -36,8 +36,8 @@ async function fetchGithubUser(username) {
 };
 
 //buscando repositórios publicos
-async function fetchUserRepositories(username) {
-  const res = await fetch(`https://api.github.com/users/${username}/repos`);
+async function fetchUserRepositories(login) {
+  const res = await fetch(`https://api.github.com/users/${login}/repos`);
   const reposData = await res.json();
 
   state.repos = reposData
@@ -69,29 +69,19 @@ onUnmounted(() => {
 <template>
   <h1>GitHub User Data</h1>
 
+  <p>Pesquisando por: <strong>https://api.github.com/users/{{ userName }}</strong></p>
   <!-- v-on:form-submit -->
-  <Form 
-    @form-submit="fetchGithubUser"
-  />
+  <Form @form-submit="fetchGithubUser" v-model="userName" />
 
   <!--OBS) ao colocar a imagem dentro do código apresenta erro -->
   <img v-bind:src="state.avatar_url">
-  <UserInfo 
-    v-if="state.login !== ''" 
-    :login="state.login" 
-    :name="state.name" 
-    :company="state.company"
-    :bio="state.bio" 
-  />
+  <UserInfo v-if="state.login !== ''" :login="state.login" :name="state.name" :company="state.company"
+    :bio="state.bio" />
 
   <section v-if="state.repos.length > 0">
     <h2>{{ reposCountMessage }}</h2>
-    <Repository 
-      v-for="repo of state.repos" 
-      :full_name="repo.full_name"
-      :description="repo.description"
-      :html_url="repo.html_url"
-    />
+    <Repository v-for="repo of state.repos" :full_name="repo.full_name" :description="repo.description"
+      :html_url="repo.html_url" />
   </section>
 </template>
 
