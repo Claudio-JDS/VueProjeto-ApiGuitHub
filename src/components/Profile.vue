@@ -1,5 +1,6 @@
 <script setup>
-import { ref, reactive, computed } from 'vue';
+import { ref, reactive, computed, onMounted, onUpdated, onUnmounted } from 'vue';
+import UserInfo from './UserInfo.vue';
 
 const searchInput = ref('')
 
@@ -25,7 +26,6 @@ async function fetchGithubUser(ev) {
     state.bio = bio;
     state.company = company;
     state.avatar_url = avatar_url;
-    state.repos = [];
 
     fetchUserRepositories(login)
 
@@ -47,24 +47,41 @@ const reposCountMessage = computed(() => {
     ? `${state.name} possui ${state.repos.length} repositórios públicos.`
     : `${state.name} não possui nenhum repositório público.`
 })
+
+//
+onMounted(() => {
+  console.log("O componente foi montado")
+})
+
+//
+onUpdated(() => {
+  console.log("O componente foi atualizado")
+})
+
+//
+onUnmounted(() => {
+  console.log("O componente foi desmontado")
+})
 </script>
 
 
 <template>
   <h1>GitHub User Data</h1>
+  <!-- <p>Pesquisando por: <strong>https://api.github.com/users/{{ searchInput }}</strong></p> -->
   <form @submit="fetchGithubUser">
-    <!-- O v-model abrivia os dois comandos: :value="searchInput" e  @input="(ev) => ev.target.value"-->
     <input type="text" placeholder="Digite um endeço do github" v-model="searchInput">
     <button>Carregar Usuário</button>
   </form>
 
+  <!--OBS) ao colocar a imagem dentro do código apresenta erro -->
   <img v-bind:src="state.avatar_url">
-  <div v-if="state.login !== ''">
-    <strong>@{{ state.login }}</strong>
-    <h2>{{ state.name }}</h2>
-    <h3>{{ state.company }}</h3>
-    <span>{{ state.bio }}</span>
-  </div>
+  <UserInfo 
+    v-if="state.login !== ''"
+    :login="state.login"
+    :name="state.name"
+    :company="state.company"
+    :bio="state.bio"
+  />
 
   <section v-if="state.repos.length > 0">
     <h2>{{ reposCountMessage }}</h2>
