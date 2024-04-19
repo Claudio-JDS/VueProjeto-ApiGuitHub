@@ -1,6 +1,7 @@
 <script setup>
 import { ref, reactive, computed, onMounted, onUpdated, onUnmounted } from 'vue';
 import UserInfo from './UserInfo.vue';
+import Repository from './Repository.vue';
 
 const searchInput = ref('')
 
@@ -76,19 +77,64 @@ onUnmounted(() => {
   <!--OBS) ao colocar a imagem dentro do código apresenta erro -->
   <img v-bind:src="state.avatar_url">
   <UserInfo 
-    v-if="state.login !== ''"
-    :login="state.login"
-    :name="state.name"
+    v-if="state.login !== ''" 
+    :login="state.login" 
+    :name="state.name" 
     :company="state.company"
-    :bio="state.bio"
+    :bio="state.bio" 
   />
 
   <section v-if="state.repos.length > 0">
     <h2>{{ reposCountMessage }}</h2>
-    <article v-for="repo of state.repos">
-      <h3>{{ repo.full_name }}</h3>
-      <p>{{ repo.description }}</p>
-      <a :href="repo.html_url" target="_blank">Ir para GitHub</a>
-    </article>
+    <Repository 
+      v-for="repo of state.repos" 
+      :full_name="repo.full_name"
+      :description="repo.description"
+      :html_url="repo.html_url"
+    />
   </section>
 </template>
+
+<style scoped>
+  img {
+    border: 1px solid #e5e5e5;
+    border-radius: 999px;
+    display: block;
+    margin: 1rem auto;
+    width: 8rem;
+    height: 8rem;
+  }
+
+  h1{
+    color: #f64348;
+  }
+
+  input,
+  button {
+    max-width: 20rem;
+    padding: .5rem;
+  }
+
+  input {
+    background-color: #1c1a1d;
+    border: 1px solid #f64348;
+    border-radius: .25rem;
+    color: #e5e5e5;
+    margin: 1rem 1rem 1rem 0;
+  }
+
+  button {
+    background-color: #f64348;
+    border: unset;
+    border-radius: .25rem;
+    color: #1c1a1d;
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  button:hover {
+    cursor: pointer;
+    filter: brightness(0.95);
+  }
+</style>
