@@ -1,9 +1,10 @@
 <script setup>
 import { ref, reactive, computed, onMounted, onUpdated, onUnmounted } from 'vue';
+import Form from './Form.vue';
 import UserInfo from './UserInfo.vue';
 import Repository from './Repository.vue';
 
-const searchInput = ref('')
+// const searchInput = ref('')
 
 const state = reactive({
   login: '',
@@ -15,11 +16,10 @@ const state = reactive({
 })
 
 
-async function fetchGithubUser(ev) {
-  ev.preventDefault()
+async function fetchGithubUser(username) {
 
   try {
-    const res = await fetch(`https://api.github.com/users/${searchInput.value}`);
+    const res = await fetch(`https://api.github.com/users/${username}`);
     const { login, name, bio, company, avatar_url } = await res.json();
 
     state.login = login;
@@ -68,11 +68,11 @@ onUnmounted(() => {
 
 <template>
   <h1>GitHub User Data</h1>
-  <!-- <p>Pesquisando por: <strong>https://api.github.com/users/{{ searchInput }}</strong></p> -->
-  <form @submit="fetchGithubUser">
-    <input type="text" placeholder="Digite um endeço do github" v-model="searchInput">
-    <button>Carregar Usuário</button>
-  </form>
+
+  <!-- v-on:form-submit -->
+  <Form 
+    @form-submit="fetchGithubUser"
+  />
 
   <!--OBS) ao colocar a imagem dentro do código apresenta erro -->
   <img v-bind:src="state.avatar_url">
@@ -107,34 +107,5 @@ onUnmounted(() => {
 
   h1{
     color: #f64348;
-  }
-
-  input,
-  button {
-    max-width: 20rem;
-    padding: .5rem;
-  }
-
-  input {
-    background-color: #1c1a1d;
-    border: 1px solid #f64348;
-    border-radius: .25rem;
-    color: #e5e5e5;
-    margin: 1rem 1rem 1rem 0;
-  }
-
-  button {
-    background-color: #f64348;
-    border: unset;
-    border-radius: .25rem;
-    color: #1c1a1d;
-    font-size: 1rem;
-    font-weight: 700;
-    text-transform: uppercase;
-  }
-
-  button:hover {
-    cursor: pointer;
-    filter: brightness(0.95);
   }
 </style>
