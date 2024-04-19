@@ -1,15 +1,26 @@
 <script setup>
-  import {ref, reactive} from 'vue'
-  import GitHub from './components/GitHub.vue';
+  import {ref} from 'vue'
+  import Profile from './components/Profile.vue';
 
-
+  const isOpen = ref(true)
 </script>
 
-<template>
-  <GitHub />
 
+<template>
+  <input type="checkbox" v-model="isOpen"> {{ isOpen }}
+  <Profile v-if="isOpen"/>
 </template>
 
-<style scoped>
-  
+<style>
+  #app {
+  font-family: 'Ubuntu', sans-serif;
+  min-height: 100vh;
+  max-width: 40rem;
+  margin: 0 auto;
+  text-align: center;
+}
+a {
+  color: #f64348;
+}
+
 </style>
